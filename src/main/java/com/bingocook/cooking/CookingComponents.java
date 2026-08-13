@@ -18,11 +18,9 @@ public final class CookingComponents {
             Registries.DATA_COMPONENT_TYPE, BingoCook.MODID);
 
     /**
-     * {@code bingocook:permanent_attributes}: the permanent attribute modifiers
-     * granted when a dish is eaten. Written to the produced stack by
-     * {@link SeasoningModifier#applyTo(net.minecraft.world.item.ItemStack)} and
-     * applied by {@link CookingEvents#onUseItemFinish} through
-     * {@code AttributeMap.addPermanentModifier}, persisting in the player's NBT.
+     * Permanent attribute modifiers granted when a dish is eaten. Written by
+     * {@link SeasoningModifier#applyTo} and applied by
+     * {@link CookingEvents#onUseItemFinish}, persisting in the player's NBT.
      */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<AttributeModifierEntry>>> PERMANENT_ATTRIBUTES = DATA_COMPONENTS.registerComponentType(
             "permanent_attributes",
