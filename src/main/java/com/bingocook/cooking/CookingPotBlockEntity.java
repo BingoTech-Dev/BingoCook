@@ -82,12 +82,12 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
     }
 
     /**
-     * The M4 menu replaces this placeholder. A null result keeps the
-     * {@code createMenu} chain a no-op (right-clicking does nothing until M4).
+     * Opens the cooking pot menu; this block entity is both the
+     * {@code Container} and the {@code ContainerData} the menu reads from.
      */
     @Override
-    protected @Nullable AbstractContainerMenu createMenu(int containerId, Inventory inventory) {
-        return null;
+    protected AbstractContainerMenu createMenu(int containerId, Inventory inventory) {
+        return new CookingPotMenu(containerId, inventory, this, this);
     }
 
     /**
@@ -199,7 +199,11 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
             return;
         }
 
-        ItemStack result = blockEntity.currentRecipe.value().result().create();
+        // Prepare the final result (seasonings applied) *before* the
+        // acceptability check: the seasoned stack is what ends up in the
+        // output slot, so stacking must compare against it, not the raw
+        // recipe template (raw vs seasoned components differ).
+        ItemStack result = prepareResult(blockEntity.currentRecipe.value(), blockEntity);
         if (!canAcceptOutput(blockEntity.items.get(OUTPUT_SLOT), result)) {
             if (blockEntity.progress != 0) {
                 blockEntity.progress = 0;
@@ -212,12 +216,33 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
         blockEntity.progress++;
         blockEntity.setChanged();
         if (blockEntity.progress >= blockEntity.cookingTime) {
-            craft(blockEntity, blockEntity.currentRecipe.value(), result);
+            craft(blockEntity, result);
             blockEntity.progress = 0;
             LOGGER.debug("[CookingPot] Crafted {} at {} - food: {}, permanent: {}, consumeEffects: {}",
                     result, pos, result.get(DataComponents.FOOD), result.get(CookingComponents.PERMANENT_ATTRIBUTES),
                     result.has(DataComponents.CONSUMABLE) ? result.get(DataComponents.CONSUMABLE).onConsumeEffects().size() : 0);
         }
+    }
+
+    /**
+     * Creates the recipe result and applies the seasoning corrections: each
+     * seasoning item kind defined by the recipe applies its modifier at most
+     * once, regardless of how many stacks of it are present. Called once per
+     * tick on a freshly created stack, so repeated calls do not accumulate.
+     */
+    private static ItemStack prepareResult(CookingRecipe recipe, CookingPotBlockEntity blockEntity) {
+        ItemStack result = recipe.result().create();
+        for (var entry : recipe.seasonings().entrySet()) {
+            for (int i = 0; i < INPUT_SLOTS; i++) {
+                if (blockEntity.items.get(i).is(holder -> holder == entry.getKey())) {
+                    entry.getValue().applyTo(result);
+                    LOGGER.debug("[CookingPot] Applied seasoning {}: {}",
+                            entry.getKey().getRegisteredName(), entry.getValue());
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     private void resetProgress() {
@@ -266,22 +291,11 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
 
     /**
      * Produces one dish into the output slot, decrementing every ingredient
-     * slot by one. Seasoning corrections are applied before insertion: each
-     * seasoning item kind defined by the recipe applies its modifier at most
-     * once, regardless of how many stacks of it are present.
+     * slot by one. The result has already been prepared (seasonings applied)
+     * by {@link #prepareResult}, so it is the exact stack that was checked
+     * against the output slot.
      */
-    private static void craft(CookingPotBlockEntity blockEntity, CookingRecipe recipe, ItemStack result) {
-        for (var entry : recipe.seasonings().entrySet()) {
-            for (int i = 0; i < INPUT_SLOTS; i++) {
-                if (blockEntity.items.get(i).is(holder -> holder == entry.getKey())) {
-                    entry.getValue().applyTo(result);
-                    LOGGER.debug("[CookingPot] Applied seasoning {}: {}",
-                            entry.getKey().getRegisteredName(), entry.getValue());
-                    break;
-                }
-            }
-        }
-
+    private static void craft(CookingPotBlockEntity blockEntity, ItemStack result) {
         ItemStack output = blockEntity.items.get(OUTPUT_SLOT);
         if (output.isEmpty()) {
             blockEntity.setItem(OUTPUT_SLOT, result);

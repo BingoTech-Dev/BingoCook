@@ -4,10 +4,12 @@ import com.bingocook.BingoCook;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.material.MapColor;
@@ -27,6 +29,7 @@ public final class CookingRegistries {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(BingoCook.MODID);
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(BingoCook.MODID);
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, BingoCook.MODID);
+    public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(Registries.MENU, BingoCook.MODID);
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(Registries.RECIPE_TYPE, BingoCook.MODID);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(Registries.RECIPE_SERIALIZER, BingoCook.MODID);
 
@@ -39,6 +42,10 @@ public final class CookingRegistries {
     public static final DeferredItem<BlockItem> COOKING_POT_ITEM = ITEMS.registerSimpleBlockItem("cooking_pot", COOKING_POT);
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CookingPotBlockEntity>> COOKING_POT_BE =
             BLOCK_ENTITY_TYPES.register("cooking_pot", () -> new BlockEntityType<>(CookingPotBlockEntity::new, COOKING_POT.get()));
+
+    // Cooking pot menu (client screen registered in BingoCookClient).
+    public static final DeferredHolder<MenuType<?>, MenuType<CookingPotMenu>> COOKING_POT_MENU =
+            MENUS.register("cooking_pot", () -> new MenuType<>(CookingPotMenu::new, FeatureFlags.DEFAULT_FLAGS));
 
     // Example dishes - the base food values are corrected by the recipe's
     // seasonings when produced.
@@ -57,6 +64,7 @@ public final class CookingRegistries {
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
         BLOCK_ENTITY_TYPES.register(modEventBus);
+        MENUS.register(modEventBus);
         RECIPE_TYPES.register(modEventBus);
         RECIPE_SERIALIZERS.register(modEventBus);
         CookingComponents.register(modEventBus);
