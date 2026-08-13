@@ -1,0 +1,22 @@
+{
+  "type": "bingocook:cooking",
+  "allowed": ["bingocook:vegetable", "bingocook:fruit", "bingocook:seasoning"],
+  "requirements": {
+    "bingocook:vegetable": { "min": 1 },
+    "bingocook:fruit": { "min": 1 }
+  },
+  "cookingTime": 600,
+  "result": { "id": "bingocook:vegetable_fruit_stew", "count": 1 },
+  "seasonings": {
+    "minecraft:sugar": {
+      "nutrition": 1,
+      "saturation": 1,
+      "effects": [
+        { "effect": "minecraft:instant_health", "duration": 1, "amplifier": 0, "probability": 1.0 }
+      ],
+      "permanentAttributes": [
+        { "attribute": "minecraft:max_health", "amount": 1.0, "operation": "add_value" }
+      ]
+    }
+  }
+}

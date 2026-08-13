@@ -129,6 +129,16 @@
       "elements": {
         "bingocook:chaos": 3
       }
+    },
+    "bingocook:vegetable_fruit_stew": {
+      "elements": {
+        "bingocook:chaos": 1
+      }
+    },
+    "bingocook:meat_vegetable_stew": {
+      "elements": {
+        "bingocook:chaos": 1
+      }
     }
   }
 }

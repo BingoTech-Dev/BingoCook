@@ -3,6 +3,8 @@
   "block.bingocook.example_block": "Example Block",
   "item.bingocook.example_item": "Example Item",
   "block.bingocook.cooking_pot": "Cooking Pot",
+  "item.bingocook.vegetable_fruit_stew": "Vegetable Fruit Stew",
+  "item.bingocook.meat_vegetable_stew": "Meat Vegetable Stew",
 
   "bingocook.configuration.title": "Bingo Cook Configs",
   "bingocook.configuration.section.bingocook.common.toml": "Bingo Cook Configs",

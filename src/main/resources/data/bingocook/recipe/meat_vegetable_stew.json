@@ -1,0 +1,10 @@
+{
+  "type": "bingocook:cooking",
+  "allowed": ["bingocook:meat", "bingocook:vegetable", "bingocook:seasoning"],
+  "requirements": {
+    "bingocook:meat": { "min": 2 },
+    "bingocook:vegetable": { "min": 1 }
+  },
+  "cookingTime": 800,
+  "result": { "id": "bingocook:meat_vegetable_stew", "count": 1 }
+}

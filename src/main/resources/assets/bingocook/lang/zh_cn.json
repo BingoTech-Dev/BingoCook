@@ -1,3 +1,5 @@
 {
-  "block.bingocook.cooking_pot": "烹饪锅"
+  "block.bingocook.cooking_pot": "烹饪锅",
+  "item.bingocook.vegetable_fruit_stew": "蔬果乱炖",
+  "item.bingocook.meat_vegetable_stew": "肉菜炖"
 }

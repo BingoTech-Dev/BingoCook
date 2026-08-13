@@ -3,6 +3,7 @@ package com.bingocook;
 import org.slf4j.Logger;
 
 import com.bingocook.cooking.CookingEvents;
+import com.bingocook.cooking.CookingRegistries;
 import com.bingocook.cooking.DataMaps;
 import com.mojang.logging.LogUtils;
 
@@ -85,6 +86,10 @@ public class BingoCook {
         // Register the Deferred Register to the mod event bus so tabs get registered
         CREATIVE_MODE_TABS.register(modEventBus);
 
+        // Register the cooking system's registries (dish items, cooking recipe
+        // type/serializer, custom data component types)
+        CookingRegistries.register(modEventBus);
+
         // Register the "item -> elemental values" data map type
         modEventBus.addListener(DataMaps::registerDataMapTypes);
 
@@ -122,6 +127,9 @@ public class BingoCook {
         if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
             event.accept(EXAMPLE_BLOCK_ITEM);
             event.accept(COOKING_POT_ITEM);
+        } else if (event.getTabKey() == CreativeModeTabs.FOOD_AND_DRINKS) {
+            event.accept(CookingRegistries.VEGETABLE_FRUIT_STEW);
+            event.accept(CookingRegistries.MEAT_VEGETABLE_STEW);
         }
     }
 
