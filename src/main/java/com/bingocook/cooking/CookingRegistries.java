@@ -21,7 +21,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 /**
  * Registries owned by the cooking system: the cooking pot block, block entity
- * type and item, example dish items, the custom cooking recipe type and its
+ * type and item, dish items, the custom cooking recipe type and its
  * serializer, and the custom data component types (see
  * {@link CookingComponents}).
  */
