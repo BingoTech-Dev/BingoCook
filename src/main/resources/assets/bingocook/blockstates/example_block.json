@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "bingocook:block/example_block"
+    }
+  }
+}

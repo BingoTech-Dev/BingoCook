@@ -186,12 +186,9 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
             blockEntity.recipeDirty = false;
             blockEntity.progress = 0;
             if (blockEntity.currentRecipe == null) {
-                LOGGER.debug("[CookingPot] No matching recipe for the nine slots at {}", pos);
                 return;
             }
             blockEntity.cookingTime = blockEntity.currentRecipe.value().cookingTime();
-            LOGGER.debug("[CookingPot] Matched recipe {} ({} ticks) at {}",
-                    blockEntity.currentRecipe.id(), blockEntity.cookingTime, pos);
         }
 
         if (!hasLitCampfireBelow(level, pos)) {
@@ -208,7 +205,6 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
             if (blockEntity.progress != 0) {
                 blockEntity.progress = 0;
                 blockEntity.setChanged();
-                LOGGER.debug("[CookingPot] Output slot blocked, progress reset at {}", pos);
             }
             return;
         }
@@ -218,7 +214,7 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
         if (blockEntity.progress >= blockEntity.cookingTime) {
             craft(blockEntity, result);
             blockEntity.progress = 0;
-            LOGGER.debug("[CookingPot] Crafted {} at {} - food: {}, permanent: {}, consumeEffects: {}",
+            LOGGER.info("Crafted {} at {} - food: {}, permanent: {}, consumeEffects: {}",
                     result, pos, result.get(DataComponents.FOOD), result.get(CookingComponents.PERMANENT_ATTRIBUTES),
                     result.has(DataComponents.CONSUMABLE) ? result.get(DataComponents.CONSUMABLE).onConsumeEffects().size() : 0);
         }
@@ -236,8 +232,6 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
             for (int i = 0; i < INPUT_SLOTS; i++) {
                 if (blockEntity.items.get(i).is(holder -> holder == entry.getKey())) {
                     entry.getValue().applyTo(result);
-                    LOGGER.debug("[CookingPot] Applied seasoning {}: {}",
-                            entry.getKey().getRegisteredName(), entry.getValue());
                     break;
                 }
             }

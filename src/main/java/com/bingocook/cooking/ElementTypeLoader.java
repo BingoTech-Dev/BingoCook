@@ -93,6 +93,5 @@ public final class ElementTypeLoader implements ResourceManagerReloadListener {
         }
 
         this.elements = Set.copyOf(loaded);
-        LOGGER.debug("Loaded {} cooking element types: {}", this.elements.size(), this.elements);
     }
 }
