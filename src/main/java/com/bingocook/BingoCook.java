@@ -17,7 +17,6 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.neoforged.api.distmarker.Dist;
@@ -53,12 +52,6 @@ public class BingoCook {
     public static final DeferredBlock<Block> EXAMPLE_BLOCK = BLOCKS.registerSimpleBlock("example_block", p -> p.mapColor(MapColor.STONE));
     // Creates a new BlockItem with the id "bingocook:example_block", combining the namespace and path
     public static final DeferredItem<BlockItem> EXAMPLE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("example_block", EXAMPLE_BLOCK);
-
-    // Cooking Pot block - placeholder only, stone-like properties, functionality will be added later
-    public static final DeferredBlock<Block> COOKING_POT = BLOCKS.registerSimpleBlock("cooking_pot",
-            p -> p.mapColor(MapColor.STONE).sound(SoundType.STONE).strength(1.5f, 6.0f));
-    // Creates a new BlockItem with the id "bingocook:cooking_pot", combining the namespace and path
-    public static final DeferredItem<BlockItem> COOKING_POT_ITEM = ITEMS.registerSimpleBlockItem("cooking_pot", COOKING_POT);
 
     // Creates a new food item with the id "bingocook:example_id", nutrition 1 and saturation 2
     public static final DeferredItem<Item> EXAMPLE_ITEM = ITEMS.registerSimpleItem("example_item", p -> p.food(new FoodProperties.Builder()
@@ -126,7 +119,7 @@ public class BingoCook {
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
             event.accept(EXAMPLE_BLOCK_ITEM);
-            event.accept(COOKING_POT_ITEM);
+            event.accept(CookingRegistries.COOKING_POT_ITEM);
         } else if (event.getTabKey() == CreativeModeTabs.FOOD_AND_DRINKS) {
             event.accept(CookingRegistries.VEGETABLE_FRUIT_STEW);
             event.accept(CookingRegistries.MEAT_VEGETABLE_STEW);
