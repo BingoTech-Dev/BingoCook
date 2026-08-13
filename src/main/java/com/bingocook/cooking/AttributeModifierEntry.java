@@ -23,16 +23,16 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
  */
 public record AttributeModifierEntry(Holder<Attribute> attribute, double amount, AttributeModifier.Operation operation) {
     public static final Codec<AttributeModifierEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Attribute.CODEC.fieldOf("attribute").forGetter(AttributeModifierEntry::attribute),
-            Codec.DOUBLE.fieldOf("amount").forGetter(AttributeModifierEntry::amount),
-            AttributeModifier.Operation.CODEC.fieldOf("operation").forGetter(AttributeModifierEntry::operation))
-            .apply(instance, AttributeModifierEntry::new));
+            Attribute.CODEC.fieldOf("attribute").forGetter(entry -> entry.attribute()),
+            Codec.DOUBLE.fieldOf("amount").forGetter(entry -> entry.amount()),
+            AttributeModifier.Operation.CODEC.fieldOf("operation").forGetter(entry -> entry.operation()))
+            .apply(instance, (attribute, amount, operation) -> new AttributeModifierEntry(attribute, amount, operation)));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, AttributeModifierEntry> STREAM_CODEC = StreamCodec.composite(
-            Attribute.STREAM_CODEC, AttributeModifierEntry::attribute,
-            ByteBufCodecs.DOUBLE, AttributeModifierEntry::amount,
-            AttributeModifier.Operation.STREAM_CODEC, AttributeModifierEntry::operation,
-            AttributeModifierEntry::new);
+            Attribute.STREAM_CODEC, entry -> entry.attribute(),
+            ByteBufCodecs.DOUBLE, entry -> entry.amount(),
+            AttributeModifier.Operation.STREAM_CODEC, entry -> entry.operation(),
+            (attribute, amount, operation) -> new AttributeModifierEntry(attribute, amount, operation));
 
     /**
      * Builds the modifier with a fresh unique ID, so every eaten dish stacks.
