@@ -1,0 +1,134 @@
+{
+  "values": {
+    "minecraft:apple": {
+      "elements": {
+        "bingocook:fruit": 2
+      }
+    },
+    "minecraft:sweet_berries": {
+      "elements": {
+        "bingocook:fruit": 1
+      }
+    },
+    "minecraft:glow_berries": {
+      "elements": {
+        "bingocook:fruit": 1
+      }
+    },
+    "minecraft:melon_slice": {
+      "elements": {
+        "bingocook:fruit": 2
+      }
+    },
+    "minecraft:carrot": {
+      "elements": {
+        "bingocook:vegetable": 2
+      }
+    },
+    "minecraft:potato": {
+      "elements": {
+        "bingocook:vegetable": 2
+      }
+    },
+    "minecraft:beetroot": {
+      "elements": {
+        "bingocook:vegetable": 2
+      }
+    },
+    "minecraft:kelp": {
+      "elements": {
+        "bingocook:vegetable": 1
+      }
+    },
+    "minecraft:brown_mushroom": {
+      "elements": {
+        "bingocook:vegetable": 1
+      }
+    },
+    "minecraft:red_mushroom": {
+      "elements": {
+        "bingocook:vegetable": 1
+      }
+    },
+    "minecraft:porkchop": {
+      "elements": {
+        "bingocook:meat": 3
+      }
+    },
+    "minecraft:beef": {
+      "elements": {
+        "bingocook:meat": 3
+      }
+    },
+    "minecraft:chicken": {
+      "elements": {
+        "bingocook:meat": 2
+      }
+    },
+    "minecraft:mutton": {
+      "elements": {
+        "bingocook:meat": 2
+      }
+    },
+    "minecraft:rabbit": {
+      "elements": {
+        "bingocook:meat": 1
+      }
+    },
+    "minecraft:cod": {
+      "elements": {
+        "bingocook:meat": 2
+      }
+    },
+    "minecraft:salmon": {
+      "elements": {
+        "bingocook:meat": 2
+      }
+    },
+    "minecraft:egg": {
+      "elements": {
+        "bingocook:egg": 2
+      }
+    },
+    "minecraft:milk_bucket": {
+      "elements": {
+        "bingocook:milk": 4
+      }
+    },
+    "minecraft:honey_bottle": {
+      "elements": {
+        "bingocook:honey": 3
+      }
+    },
+    "minecraft:sugar": {
+      "elements": {
+        "bingocook:seasoning": 1
+      }
+    },
+    "minecraft:cocoa_beans": {
+      "elements": {
+        "bingocook:seasoning": 2
+      }
+    },
+    "minecraft:wheat": {
+      "elements": {
+        "bingocook:seasoning": 1
+      }
+    },
+    "minecraft:spider_eye": {
+      "elements": {
+        "bingocook:chaos": 2
+      }
+    },
+    "minecraft:fermented_spider_eye": {
+      "elements": {
+        "bingocook:chaos": 3
+      }
+    },
+    "minecraft:pufferfish": {
+      "elements": {
+        "bingocook:chaos": 3
+      }
+    }
+  }
+}

@@ -2,6 +2,8 @@ package com.bingocook;
 
 import org.slf4j.Logger;
 
+import com.bingocook.cooking.CookingEvents;
+import com.bingocook.cooking.DataMaps;
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -83,10 +85,17 @@ public class BingoCook {
         // Register the Deferred Register to the mod event bus so tabs get registered
         CREATIVE_MODE_TABS.register(modEventBus);
 
+        // Register the "item -> elemental values" data map type
+        modEventBus.addListener(DataMaps::registerDataMapTypes);
+
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (ExampleMod) to respond directly to events.
         // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
         NeoForge.EVENT_BUS.register(this);
+
+        // Register the cooking system's server event subscriptions (element type
+        // reload listener and /bingocook commands)
+        NeoForge.EVENT_BUS.register(CookingEvents.INSTANCE);
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
