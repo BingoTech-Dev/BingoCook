@@ -13,6 +13,7 @@ import net.minecraft.resources.Identifier;
  * their {@code allowed} whitelist.
  */
 public record CookingElement(Identifier id) {
+    @SuppressWarnings("null")
     public static final Codec<CookingElement> CODEC = Identifier.CODEC.xmap(CookingElement::new, CookingElement::id);
 
     @Override

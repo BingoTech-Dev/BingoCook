@@ -38,6 +38,7 @@ public record SeasoningModifier(
         List<SeasoningEffect> effects,
         List<AttributeModifierEntry> permanentAttributes) {
 
+    @SuppressWarnings("null")
     public static final Codec<SeasoningModifier> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.optionalFieldOf("nutrition", 0).forGetter(SeasoningModifier::nutrition),
             Codec.INT.optionalFieldOf("saturation", 0).forGetter(SeasoningModifier::saturation),
@@ -45,6 +46,7 @@ public record SeasoningModifier(
             AttributeModifierEntry.CODEC.listOf().optionalFieldOf("permanentAttributes", List.of()).forGetter(SeasoningModifier::permanentAttributes))
             .apply(instance, SeasoningModifier::new));
 
+    @SuppressWarnings("null")
     public static final StreamCodec<RegistryFriendlyByteBuf, SeasoningModifier> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, SeasoningModifier::nutrition,
             ByteBufCodecs.VAR_INT, SeasoningModifier::saturation,

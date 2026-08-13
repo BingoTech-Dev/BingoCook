@@ -71,6 +71,7 @@ public final class ElementTypeLoader implements ResourceManagerReloadListener {
         Map<Identifier, List<Resource>> stacks = manager.listResourceStacks("bingocook",
                 location -> location.getPath().equals(FILE_PATH));
 
+        @SuppressWarnings("null")
         List<Identifier> fileIds = stacks.keySet().stream()
                 .sorted(Comparator.comparing(Identifier::toString))
                 .toList();

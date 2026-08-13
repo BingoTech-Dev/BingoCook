@@ -22,6 +22,7 @@ import net.minecraft.world.effect.MobEffectInstance;
  * level).
  */
 public record SeasoningEffect(Holder<MobEffect> effect, int duration, int amplifier, float probability) {
+    @SuppressWarnings("null")
     public static final Codec<SeasoningEffect> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             MobEffect.CODEC.fieldOf("effect").forGetter(SeasoningEffect::effect),
             Codec.INT.optionalFieldOf("duration", 1).forGetter(SeasoningEffect::duration),
@@ -29,6 +30,7 @@ public record SeasoningEffect(Holder<MobEffect> effect, int duration, int amplif
             Codec.floatRange(0.0F, 1.0F).optionalFieldOf("probability", 1.0F).forGetter(SeasoningEffect::probability))
             .apply(instance, SeasoningEffect::new));
 
+    @SuppressWarnings("null")
     public static final StreamCodec<RegistryFriendlyByteBuf, SeasoningEffect> STREAM_CODEC = StreamCodec.composite(
             MobEffect.STREAM_CODEC, SeasoningEffect::effect,
             ByteBufCodecs.VAR_INT, SeasoningEffect::duration,

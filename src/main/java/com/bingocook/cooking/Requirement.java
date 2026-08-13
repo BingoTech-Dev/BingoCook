@@ -15,11 +15,13 @@ import net.minecraft.network.codec.StreamCodec;
  * <pre>{@code {"min": 2, "max": 5}}</pre>
  */
 public record Requirement(int min, int max) {
+    @SuppressWarnings("null")
     public static final Codec<Requirement> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.optionalFieldOf("min", 0).forGetter(Requirement::min),
             Codec.INT.optionalFieldOf("max", Integer.MAX_VALUE).forGetter(Requirement::max))
             .apply(instance, Requirement::new));
 
+    @SuppressWarnings("null")
     public static final StreamCodec<RegistryFriendlyByteBuf, Requirement> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, Requirement::min,
             ByteBufCodecs.VAR_INT, Requirement::max,

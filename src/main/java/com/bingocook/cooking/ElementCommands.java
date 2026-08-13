@@ -56,6 +56,7 @@ public final class ElementCommands {
 
     private static int listElements(CommandContext<CommandSourceStack> context) {
         Set<Identifier> elements = CookingData.elements();
+        @SuppressWarnings("null")
         String summary = elements.stream()
                 .map(Identifier::toString)
                 .sorted()
@@ -71,6 +72,7 @@ public final class ElementCommands {
         ItemInput input = ItemArgument.getItem(context, "item");
         Holder<Item> holder = input.item();
         Map<Identifier, Integer> values = CookingData.elementsOf(holder);
+        @SuppressWarnings("null")
         String summary = values.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey(Comparator.comparing(Identifier::toString)))
                 .map(entry -> entry.getKey() + ": " + entry.getValue())
@@ -82,7 +84,8 @@ public final class ElementCommands {
         return values.size();
     }
 
-    private static int listRecipe(CommandContext<CommandSourceStack> context) {
+    @SuppressWarnings("null")
+private static int listRecipe(CommandContext<CommandSourceStack> context) {
         Identifier id = IdentifierArgument.getId(context, "recipe");
         RecipeManager manager = context.getSource().getServer().getRecipeManager();
         RecipeHolder<?> holder = manager.recipeMap().byKey(ResourceKey.create(Registries.RECIPE, id));

@@ -20,6 +20,7 @@ import net.minecraft.resources.Identifier;
 public record ElementValues(Map<Identifier, Integer> elements) {
     public static final ElementValues EMPTY = new ElementValues(Map.of());
 
+    @SuppressWarnings("null")
     public static final Codec<ElementValues> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.unboundedMap(Identifier.CODEC, Codec.INT).fieldOf("elements").forGetter(ElementValues::elements))
             .apply(instance, ElementValues::new));

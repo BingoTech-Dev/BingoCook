@@ -63,6 +63,7 @@ import net.minecraft.world.level.Level;
 public final class CookingRecipe implements Recipe<CookingRecipeInput> {
     public static final RecipeType<CookingRecipe> TYPE = RecipeType.simple(Identifier.fromNamespaceAndPath("bingocook", "cooking"));
 
+    @SuppressWarnings("null")
     public static final MapCodec<CookingRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Recipe.CommonInfo.MAP_CODEC.forGetter(recipe -> recipe.commonInfo),
             Codec.list(Identifier.CODEC).optionalFieldOf("allowed").forGetter(recipe -> Optional.ofNullable(recipe.allowed)),
@@ -108,6 +109,7 @@ public final class CookingRecipe implements Recipe<CookingRecipeInput> {
                 return map;
             });
 
+    @SuppressWarnings("null")
     public static final StreamCodec<RegistryFriendlyByteBuf, CookingRecipe> STREAM_CODEC = StreamCodec.composite(
             Recipe.CommonInfo.STREAM_CODEC, recipe -> recipe.commonInfo,
             ByteBufCodecs.optional(Identifier.STREAM_CODEC.apply(ByteBufCodecs.list())), recipe -> Optional.ofNullable(recipe.allowed),
@@ -159,7 +161,7 @@ public final class CookingRecipe implements Recipe<CookingRecipeInput> {
 
         Map<Identifier, Integer> totals = new HashMap<>();
         for (int i = 0; i < input.size(); i++) {
-            CookingData.elementsOf(input.getItem(i)).forEach((element, amount) -> totals.merge(element, amount, Integer::sum));
+            CookingData.elementsOf(input.getItem(i)).forEach((element, amount) -> totals.merge(element, amount, (t, u) -> Integer.sum(t, u)));
         }
 
         // Elements not in `allowed` must total 0 - data-pack-added element types

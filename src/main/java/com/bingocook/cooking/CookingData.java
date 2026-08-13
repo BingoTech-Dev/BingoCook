@@ -20,6 +20,7 @@ public final class CookingData {
      * @return the currently loaded set of cooking element IDs; empty before the first
      *         server reload or when data packs removed all elements.
      */
+    @SuppressWarnings("null")
     public static Set<Identifier> elements() {
         return ElementTypeLoader.INSTANCE.getElements().stream()
                 .map(CookingElement::id)
