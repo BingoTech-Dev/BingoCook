@@ -10,6 +10,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
@@ -123,6 +124,8 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
+        this.items = NonNullList.withSize(CONTAINER_SIZE, ItemStack.EMPTY);
+        ContainerHelper.loadAllItems(input, this.items);
         this.progress = input.getIntOr("progress", 0);
         this.cookingTime = input.getIntOr("cookingTime", 0);
         this.recipeDirty = true;
@@ -131,6 +134,7 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
+        ContainerHelper.saveAllItems(output, this.items);
         output.putInt("progress", this.progress);
         output.putInt("cookingTime", this.cookingTime);
     }
