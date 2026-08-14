@@ -4,11 +4,9 @@ import com.bingocook.cooking.CookingEvents;
 import com.bingocook.cooking.CookingRegistries;
 import com.bingocook.cooking.DataMaps;
 
-import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
@@ -26,7 +24,7 @@ public class BingoCook {
         ITEMS.register(modEventBus);
 
         // Register the cooking system's registries (dish items, cooking recipe
-        // type/serializer, custom data component types)
+        // type/serializer, custom data component types, creative tab)
         CookingRegistries.register(modEventBus);
 
         // Register the "item -> elemental values" data map type
@@ -35,17 +33,5 @@ public class BingoCook {
         // Register the cooking system's server event subscriptions (element type
         // reload listener and /bingocook commands)
         NeoForge.EVENT_BUS.register(CookingEvents.INSTANCE);
-
-        // Register items to creative tabs
-        modEventBus.addListener(this::addCreative);
-    }
-
-    private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
-            event.accept(CookingRegistries.COOKING_POT_ITEM);
-        } else if (event.getTabKey() == CreativeModeTabs.FOOD_AND_DRINKS) {
-            event.accept(CookingRegistries.VEGETABLE_FRUIT_STEW);
-            event.accept(CookingRegistries.MEAT_VEGETABLE_STEW);
-        }
     }
 }

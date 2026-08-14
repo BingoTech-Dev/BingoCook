@@ -3,9 +3,11 @@ package com.bingocook.cooking;
 import com.bingocook.BingoCook;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -32,6 +34,7 @@ public final class CookingRegistries {
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(Registries.MENU, BingoCook.MODID);
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(Registries.RECIPE_TYPE, BingoCook.MODID);
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(Registries.RECIPE_SERIALIZER, BingoCook.MODID);
+    public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, BingoCook.MODID);
 
     // Cooking pot block (functionality in CookingPotBlockEntity; menu in M4).
     // registerBlock (not plain register) is required: it assigns the block id
@@ -54,6 +57,22 @@ public final class CookingRegistries {
     public static final DeferredItem<Item> MEAT_VEGETABLE_STEW = ITEMS.registerSimpleItem("meat_vegetable_stew",
             properties -> properties.food(new FoodProperties.Builder().nutrition(10).saturationModifier(1.0F).build()));
 
+    // BingoCook creative tab: home of every item added by the mod (cooking pot
+    // and dishes). The icon and display item suppliers are lazy, so the tab
+    // builder may safely reference the DeferredItems above. NeoForge places
+    // modded tabs on their own pages (CreativeTabsScreenPage); the row/column
+    // picked by CreativeModeTab.builder() is not used for modded tabs.
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> BINGOCOOK_TAB =
+            CREATIVE_TABS.register("bingocook", () -> CreativeModeTab.builder()
+                    .title(Component.translatable("itemGroup.bingocook"))
+                    .icon(() -> COOKING_POT_ITEM.toStack())
+                    .displayItems((parameters, output) -> {
+                        output.accept(COOKING_POT_ITEM);
+                        output.accept(VEGETABLE_FRUIT_STEW);
+                        output.accept(MEAT_VEGETABLE_STEW);
+                    })
+                    .build());
+
     public static final DeferredHolder<RecipeType<?>, RecipeType<CookingRecipe>> COOKING_TYPE = RECIPE_TYPES.register("cooking", () -> CookingRecipe.TYPE);
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<CookingRecipe>> COOKING_SERIALIZER = RECIPE_SERIALIZERS.register("cooking", () -> CookingRecipe.SERIALIZER);
 
@@ -67,6 +86,7 @@ public final class CookingRegistries {
         MENUS.register(modEventBus);
         RECIPE_TYPES.register(modEventBus);
         RECIPE_SERIALIZERS.register(modEventBus);
+        CREATIVE_TABS.register(modEventBus);
         CookingComponents.register(modEventBus);
     }
 }
