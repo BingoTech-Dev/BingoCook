@@ -184,7 +184,12 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
                 || !blockEntity.currentRecipe.value().matches(input, level)) {
             blockEntity.currentRecipe = findRecipe(level, input);
             blockEntity.recipeDirty = false;
-            blockEntity.progress = 0;
+            // Persist the reset even when no recipe matches (mirrors the
+            // output-blocked reset below and resetProgress()).
+            if (blockEntity.progress != 0) {
+                blockEntity.progress = 0;
+                blockEntity.setChanged();
+            }
             if (blockEntity.currentRecipe == null) {
                 return;
             }
