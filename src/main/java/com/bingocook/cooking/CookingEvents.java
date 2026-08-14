@@ -14,7 +14,9 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 
 /**
- * NeoForge event bus subscriptions for the cooking system.
+ * NeoForge event bus subscriptions for the cooking system: registers the
+ * element type reload listener, the /bingocook commands, and applies
+ * permanent attribute modifiers when a dish is fully eaten.
  *
  * <p>An instance is registered on {@code NeoForge.EVENT_BUS} by
  * {@link com.bingocook.BingoCook}.
