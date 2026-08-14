@@ -17,14 +17,19 @@ import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
  * values with {@code "#namespace:tag"} and element-level {@code "replace": true}
  * (wrapping the value under {@code "value"}); /reload picks up changes.
  *
- * <p>This map is intentionally NOT synced to clients - v1 has no client-side
- * element display.
+ * <p>The map is synced to clients: NeoForge serializes the attachment with the
+ * network codec ({@link ElementValues#CODEC}) into JSON during world join, so
+ * client-side consumers such as {@link ElementTooltips} see the same values as
+ * the server. Sync is not mandatory, so vanilla clients can still connect and
+ * simply have no element data.
  */
 public final class DataMaps {
     public static final DataMapType<Item, ElementValues> ITEM_ELEMENTS = DataMapType.builder(
             Identifier.fromNamespaceAndPath("bingocook", "item_elements"),
             Registries.ITEM,
-            ElementValues.CODEC).build();
+            ElementValues.CODEC)
+            .synced(ElementValues.CODEC, false)
+            .build();
 
     private DataMaps() {
     }

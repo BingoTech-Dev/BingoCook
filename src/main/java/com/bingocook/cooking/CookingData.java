@@ -10,7 +10,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * Server-side query API for cooking data.
+ * Query API for cooking data.
+ *
+ * <p>{@link #elementsOf} works on both sides: the {@link DataMaps#ITEM_ELEMENTS}
+ * data map is synced to clients during world join, so client code (e.g.
+ * {@link ElementTooltips}) reads the same values as the server. The element
+ * type set {@link #elements} is loaded server-side only.
  */
 public final class CookingData {
     private CookingData() {

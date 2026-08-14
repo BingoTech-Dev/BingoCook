@@ -3,5 +3,6 @@
   "block.bingocook.cooking_pot": "Cooking Pot",
   "container.bingocook.cooking_pot": "Cooking Pot",
   "item.bingocook.vegetable_fruit_stew": "Vegetable Fruit Stew",
-  "item.bingocook.meat_vegetable_stew": "Meat Vegetable Stew"
+  "item.bingocook.meat_vegetable_stew": "Meat Vegetable Stew",
+  "tooltip.bingocook.element_values": "Element Values"
 }
