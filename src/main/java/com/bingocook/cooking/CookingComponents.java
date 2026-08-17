@@ -10,9 +10,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-/**
- * Custom data component types owned by BingoCook.
- */
 public final class CookingComponents {
     public static final DeferredRegister.DataComponents DATA_COMPONENTS = DeferredRegister.createDataComponents(
             Registries.DATA_COMPONENT_TYPE, BingoCook.MODID);
