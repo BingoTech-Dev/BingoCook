@@ -38,3 +38,15 @@ run/
 **/src/generated/**/.cache/
 repo/
 !**/src/**/repo/
+
+### Vibe Coding ###
+### DON'T commit any AI config to the repo ###
+
+.kilo
+.opencode
+.omo
+.claude
+.cursor
+.agents
+CLAUDE.md
+AGENTS.md
