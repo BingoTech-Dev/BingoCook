@@ -20,6 +20,12 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
  * }</pre>
  */
 public record AttributeModifierEntry(Holder<Attribute> attribute, double amount, AttributeModifier.Operation operation) {
+    public AttributeModifierEntry {
+        if (!Double.isFinite(amount)) {
+            throw new IllegalArgumentException("Attribute modifier amount must be finite: " + amount);
+        }
+    }
+
     public static final Codec<AttributeModifierEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Attribute.CODEC.fieldOf("attribute").forGetter(entry -> entry.attribute()),
             Codec.DOUBLE.fieldOf("amount").forGetter(entry -> entry.amount()),
