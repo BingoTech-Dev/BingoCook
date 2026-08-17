@@ -48,7 +48,7 @@ public final class ElementTooltips {
         List<Component> tooltip = event.getToolTip();
         tooltip.add(HEADER);
         for (Map.Entry<Identifier, Integer> entry : entries) {
-            tooltip.add(Component.translatableWithFallback("element." + entry.getKey(), displayName(entry.getKey()))
+            tooltip.add(Component.translatableWithFallback(entry.getKey().toLanguageKey("element"), displayName(entry.getKey()))
                     .withStyle(ChatFormatting.YELLOW)
                     .append(Component.literal(": " + entry.getValue()).withStyle(ChatFormatting.GRAY)));
         }
