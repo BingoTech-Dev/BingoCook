@@ -139,6 +139,9 @@ public final class CookingRecipe implements Recipe<CookingRecipeInput> {
             ItemStackTemplate result,
             Map<Holder<Item>, SeasoningModifier> seasonings,
             boolean enabled) {
+        if (cookingTime < 1) {
+            throw new IllegalArgumentException("Cooking time must be at least 1 tick, got " + cookingTime);
+        }
         this.commonInfo = commonInfo;
         this.allowed = allowed;
         this.requirements = requirements;
