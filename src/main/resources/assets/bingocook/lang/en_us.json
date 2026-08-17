@@ -1,14 +1,8 @@
 {
-  "itemGroup.bingocook": "Bingo Cook Tab",
-  "block.bingocook.example_block": "Example Block",
-  "item.bingocook.example_item": "Example Item",
+  "itemGroup.bingocook": "BingoCook",
   "block.bingocook.cooking_pot": "Cooking Pot",
-
-  "bingocook.configuration.title": "Bingo Cook Configs",
-  "bingocook.configuration.section.bingocook.common.toml": "Bingo Cook Configs",
-  "bingocook.configuration.section.bingocook.common.toml.title": "Bingo Cook Configs",
-  "bingocook.configuration.items": "Item List",
-  "bingocook.configuration.logDirtBlock": "Log Dirt Block",
-  "bingocook.configuration.magicNumberIntroduction": "Magic Number Text",
-  "bingocook.configuration.magicNumber": "Magic Number"
+  "container.bingocook.cooking_pot": "Cooking Pot",
+  "item.bingocook.vegetable_fruit_stew": "Vegetable Fruit Stew",
+  "item.bingocook.meat_vegetable_stew": "Meat Vegetable Stew",
+  "tooltip.bingocook.element_values": "Element Values"
 }

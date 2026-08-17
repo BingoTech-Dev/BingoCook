@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "bingocook:fruit",
+    "bingocook:vegetable",
+    "bingocook:meat",
+    "bingocook:egg",
+    "bingocook:milk",
+    "bingocook:honey",
+    "bingocook:chaos",
+    "bingocook:seasoning"
+  ]
+}

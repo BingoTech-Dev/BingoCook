@@ -1,3 +1,16 @@
 {
-  "block.bingocook.cooking_pot": "烹饪锅"
+  "itemGroup.bingocook": "BingoCook",
+  "block.bingocook.cooking_pot": "烹饪锅",
+  "container.bingocook.cooking_pot": "烹饪锅",
+  "item.bingocook.vegetable_fruit_stew": "蔬果乱炖",
+  "item.bingocook.meat_vegetable_stew": "肉菜炖",
+  "tooltip.bingocook.element_values": "元素值",
+  "element.bingocook.fruit": "水果",
+  "element.bingocook.vegetable": "青菜",
+  "element.bingocook.meat": "肉",
+  "element.bingocook.egg": "蛋",
+  "element.bingocook.milk": "奶",
+  "element.bingocook.honey": "蜂蜜",
+  "element.bingocook.chaos": "混沌",
+  "element.bingocook.seasoning": "调味"
 }

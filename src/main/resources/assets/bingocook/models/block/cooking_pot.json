@@ -1,6 +1,33 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "ambientocclusion": true,
   "textures": {
-    "all": "minecraft:block/stone"
-  }
+    "particle": "bingocook:block/cooking_pot_side",
+    "top": "bingocook:block/cooking_pot_top",
+    "bottom": "bingocook:block/cooking_pot_side",
+    "side": "bingocook:block/cooking_pot_side",
+    "front": "bingocook:block/cooking_pot_front"
+  },
+  "display": {
+    "thirdperson_righthand": { "rotation": [75, 45, 0], "translation": [0, 2.5, 0], "scale": [0.375, 0.375, 0.375] },
+    "thirdperson_lefthand": { "rotation": [75, 45, 0], "translation": [0, 2.5, 0], "scale": [0.375, 0.375, 0.375] },
+    "firstperson_righthand": { "rotation": [0, 45, 0], "translation": [0, 0, 0], "scale": [0.4, 0.4, 0.4] },
+    "firstperson_lefthand": { "rotation": [0, 45, 0], "translation": [0, 0, 0], "scale": [0.4, 0.4, 0.4] },
+    "ground": { "rotation": [0, 0, 0], "translation": [0, 2, 0], "scale": [0.25, 0.25, 0.25] },
+    "fixed": { "rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [0.5, 0.5, 0.5] },
+    "gui": { "rotation": [30, 225, 0], "translation": [0, 0, 0], "scale": [0.625, 0.625, 0.625] }
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "down":  { "texture": "#bottom", "cullface": "down" },
+        "up":    { "texture": "#top",    "cullface": "up" },
+        "north": { "texture": "#front",  "cullface": "north" },
+        "south": { "texture": "#side",   "cullface": "south" },
+        "west":  { "texture": "#side",   "cullface": "west" },
+        "east":  { "texture": "#side",   "cullface": "east" }
+      }
+    }
+  ]
 }
