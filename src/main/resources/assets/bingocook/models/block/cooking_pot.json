@@ -1,11 +1,11 @@
 {
   "ambientocclusion": true,
   "textures": {
-    "particle": "block/cauldron_side",
-    "top": "block/cauldron_top",
-    "bottom": "block/cauldron_bottom",
-    "side": "block/cauldron_side",
-    "inside": "block/cauldron_inner"
+    "particle": "bingocook:block/cooking_pot_side",
+    "top": "bingocook:block/cooking_pot_top",
+    "bottom": "bingocook:block/cooking_pot_side",
+    "side": "bingocook:block/cooking_pot_side",
+    "front": "bingocook:block/cooking_pot_front"
   },
   "display": {
     "thirdperson_righthand": { "rotation": [75, 45, 0], "translation": [0, 2.5, 0], "scale": [0.375, 0.375, 0.375] },
@@ -19,46 +19,14 @@
   "elements": [
     {
       "from": [0, 0, 0],
-      "to": [16, 1, 16],
+      "to": [16, 16, 16],
       "faces": {
-        "down": { "texture": "#bottom", "cullface": "down" },
-        "up": { "texture": "#inside" }
-      }
-    },
-    {
-      "from": [0, 1, 0],
-      "to": [16, 13, 1],
-      "faces": {
-        "north": { "texture": "#side", "cullface": "north" },
-        "south": { "texture": "#side" },
-        "up": { "texture": "#top" }
-      }
-    },
-    {
-      "from": [0, 1, 15],
-      "to": [16, 13, 16],
-      "faces": {
-        "north": { "texture": "#side" },
-        "south": { "texture": "#side", "cullface": "south" },
-        "up": { "texture": "#top" }
-      }
-    },
-    {
-      "from": [0, 1, 0],
-      "to": [1, 13, 16],
-      "faces": {
-        "west": { "texture": "#side", "cullface": "west" },
-        "east": { "texture": "#side" },
-        "up": { "texture": "#top" }
-      }
-    },
-    {
-      "from": [15, 1, 0],
-      "to": [16, 13, 16],
-      "faces": {
-        "east": { "texture": "#side", "cullface": "east" },
-        "west": { "texture": "#side" },
-        "up": { "texture": "#top" }
+        "down":  { "texture": "#bottom", "cullface": "down" },
+        "up":    { "texture": "#top",    "cullface": "up" },
+        "north": { "texture": "#front",  "cullface": "north" },
+        "south": { "texture": "#side",   "cullface": "south" },
+        "west":  { "texture": "#side",   "cullface": "west" },
+        "east":  { "texture": "#side",   "cullface": "east" }
       }
     }
   ]
