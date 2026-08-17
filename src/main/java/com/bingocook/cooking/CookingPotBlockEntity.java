@@ -56,6 +56,13 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
     private int cookingTime;
     private boolean recipeDirty = true;
     private @Nullable RecipeHolder<CookingRecipe> currentRecipe;
+    /**
+     * Cached seasoned result for the current recipe. Valid while
+     * {@link #currentRecipe} is set and {@link #recipeDirty} is false; inputs
+     * cannot change during a cooking run, so the result is deterministic and
+     * only needs to be prepared once per recipe (re)selection.
+     */
+    private ItemStack cachedResult = ItemStack.EMPTY;
 
     public CookingPotBlockEntity(BlockPos pos, BlockState blockState) {
         super(CookingRegistries.COOKING_POT_BE.get(), pos, blockState);
@@ -184,8 +191,7 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
             ingredients.set(i, blockEntity.items.get(i));
         }
         CookingRecipeInput input = new CookingRecipeInput(ingredients);
-        if (blockEntity.recipeDirty || blockEntity.currentRecipe == null
-                || !blockEntity.currentRecipe.value().matches(input, level)) {
+        if (blockEntity.recipeDirty || blockEntity.currentRecipe == null) {
             blockEntity.currentRecipe = findRecipe(level, input);
             blockEntity.recipeDirty = false;
             // Persist the reset even when no recipe matches (mirrors the
@@ -198,6 +204,12 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
                 return;
             }
             blockEntity.cookingTime = blockEntity.currentRecipe.value().cookingTime();
+            // Prepare the seasoned result once per recipe selection and cache
+            // it: the inputs do not change until the craft, so the result is
+            // deterministic for the whole run. The cache is invalidated via
+            // recipeDirty (see setItem/removeItem/craft), avoiding per-tick
+            // ItemStack allocation and the seasoning scan.
+            blockEntity.cachedResult = prepareResult(blockEntity.currentRecipe.value(), blockEntity);
         }
 
         if (!hasLitCampfireBelow(level, pos)) {
@@ -205,12 +217,10 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
             return;
         }
 
-        // Prepare the final result (seasonings applied) *before* the
-        // acceptability check: the seasoned stack is what ends up in the
-        // output slot, so stacking must compare against it, not the raw
-        // recipe template (raw vs seasoned components differ).
-        ItemStack result = prepareResult(blockEntity.currentRecipe.value(), blockEntity);
-        if (!canAcceptOutput(blockEntity.items.get(OUTPUT_SLOT), result)) {
+        // The seasoned result is what ends up in the output slot, so stacking
+        // must be checked against it, not the raw recipe template (raw vs
+        // seasoned components differ).
+        if (!canAcceptOutput(blockEntity.items.get(OUTPUT_SLOT), blockEntity.cachedResult)) {
             if (blockEntity.progress != 0) {
                 blockEntity.progress = 0;
                 blockEntity.setChanged();
@@ -221,11 +231,14 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
         blockEntity.progress++;
         blockEntity.setChanged();
         if (blockEntity.progress >= blockEntity.cookingTime) {
-            craft(blockEntity, result);
+            craft(blockEntity, blockEntity.cachedResult);
             blockEntity.progress = 0;
             LOGGER.info("Crafted {} at {} - food: {}, permanent: {}, consumeEffects: {}",
-                    result, pos, result.get(DataComponents.FOOD), result.get(CookingComponents.PERMANENT_ATTRIBUTES),
-                    result.has(DataComponents.CONSUMABLE) ? result.get(DataComponents.CONSUMABLE).onConsumeEffects().size() : 0);
+                    blockEntity.cachedResult, pos, blockEntity.cachedResult.get(DataComponents.FOOD),
+                    blockEntity.cachedResult.get(CookingComponents.PERMANENT_ATTRIBUTES),
+                    blockEntity.cachedResult.has(DataComponents.CONSUMABLE)
+                            ? blockEntity.cachedResult.get(DataComponents.CONSUMABLE).onConsumeEffects().size()
+                            : 0);
         }
     }
 
@@ -252,6 +265,7 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
         this.progress = 0;
         this.cookingTime = 0;
         this.currentRecipe = null;
+        this.cachedResult = ItemStack.EMPTY;
         this.setChanged();
     }
 
@@ -308,6 +322,10 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
         for (int i = 0; i < INPUT_SLOTS; i++) {
             blockEntity.items.get(i).shrink(1);
         }
+        // The inputs changed (one per slot consumed): invalidate the cached
+        // recipe/result so the next tick re-matches and re-prepares, e.g. a
+        // seasoning item kind may have run out.
+        blockEntity.recipeDirty = true;
         blockEntity.setChanged();
     }
 }
