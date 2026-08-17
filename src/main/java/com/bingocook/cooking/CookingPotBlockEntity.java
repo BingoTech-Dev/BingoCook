@@ -183,6 +183,7 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
             if (blockEntity.progress != 0 || blockEntity.currentRecipe != null) {
                 blockEntity.resetProgress();
             }
+            updateLitState(level, pos, state, false);
             return;
         }
 
@@ -201,6 +202,7 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
                 blockEntity.setChanged();
             }
             if (blockEntity.currentRecipe == null) {
+                updateLitState(level, pos, state, false);
                 return;
             }
             blockEntity.cookingTime = blockEntity.currentRecipe.value().cookingTime();
@@ -214,6 +216,7 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
 
         if (!hasLitCampfireBelow(level, pos)) {
             // No heat: pause, progress is preserved.
+            updateLitState(level, pos, state, false);
             return;
         }
 
@@ -225,11 +228,13 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
                 blockEntity.progress = 0;
                 blockEntity.setChanged();
             }
+            updateLitState(level, pos, state, false);
             return;
         }
 
         blockEntity.progress++;
         blockEntity.setChanged();
+        updateLitState(level, pos, state, true);
         if (blockEntity.progress >= blockEntity.cookingTime) {
             craft(blockEntity, blockEntity.cachedResult);
             blockEntity.progress = 0;
@@ -239,6 +244,17 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
                     blockEntity.cachedResult.has(DataComponents.CONSUMABLE)
                             ? blockEntity.cachedResult.get(DataComponents.CONSUMABLE).onConsumeEffects().size()
                             : 0);
+        }
+    }
+
+    /**
+     * Flips the {@code CookingPotBlock.LIT} state to match whether the pot is
+     * actively cooking. No-op when the state already matches, so the block
+     * update (and the client-side model swap) only fires on actual changes.
+     */
+    private static void updateLitState(Level level, BlockPos pos, BlockState state, boolean lit) {
+        if (state.getValue(CookingPotBlock.LIT) != lit) {
+            level.setBlock(pos, state.setValue(CookingPotBlock.LIT, lit), 3);
         }
     }
 

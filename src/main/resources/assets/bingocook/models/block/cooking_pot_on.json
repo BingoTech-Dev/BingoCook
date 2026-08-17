@@ -1,0 +1,6 @@
+{
+  "parent": "bingocook:block/cooking_pot",
+  "textures": {
+    "front": "bingocook:block/cooking_pot_front_on"
+  }
+}

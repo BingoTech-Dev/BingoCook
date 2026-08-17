@@ -10,21 +10,35 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 /**
  * Cooking pot block. The ticker runs server-side only; right-clicking opens
- * the cooking pot menu ({@link CookingPotMenu}).
+ * the cooking pot menu ({@link CookingPotMenu}). The {@code lit} state flips
+ * to true while a recipe is actively cooking, swapping the front face for
+ * the lit texture ({@code blockstates/cooking_pot.json}).
  */
 public class CookingPotBlock extends BaseEntityBlock {
     public static final MapCodec<CookingPotBlock> CODEC = simpleCodec(CookingPotBlock::new);
 
+    public static final BooleanProperty LIT = BlockStateProperties.LIT;
+
     public CookingPotBlock(Properties properties) {
         super(properties);
+        this.registerDefaultState(this.defaultBlockState().setValue(LIT, false));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(LIT);
     }
 
     @Override
