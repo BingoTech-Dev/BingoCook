@@ -30,7 +30,7 @@ import net.minecraft.world.level.Level;
 /**
  * Cooking pot recipe: element requirements over the nine input slots.
  *
- * <p>JSON format ({@code data/<namespace>/recipes/<name>.json}):
+ * <p>JSON format ({@code data/<namespace>/recipe/<name>.json}):
  * <pre>{@code
  * {
  *   "type": "bingocook:cooking",
