@@ -2,7 +2,7 @@
 
 本文面向数据包作者：如何为 BingoCook 添加自定义**元素**、给**物品分配元素值**、编写**烹饪配方**与**调味品修正**。
 
-环境要求：Minecraft 26.1+（NeoForge），BingoCook 模组已安装。所有数据修改通过 `/reload` 即时生效，无需重启。
+环境要求：Minecraft 26.2+（NeoForge），BingoCook 模组已安装。所有数据修改通过 `/reload` 即时生效，无需重启。
 
 ---
 
@@ -23,7 +23,7 @@
 
 ```
 mycook/
-└── pack.mcmeta          # pack_format: 101（26.1）
+└── pack.mcmeta          # pack_format: 107（26.2）
 └── data/
     ├── mymod/           # 你的命名空间
     │   └── bingocook/
@@ -39,7 +39,7 @@ mycook/
 {
   "pack": {
     "description": "My BingoCook pack",
-    "pack_format": 101
+    "pack_format": 107
   }
 }
 ```
