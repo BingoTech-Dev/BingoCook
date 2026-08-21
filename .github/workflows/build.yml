@@ -68,7 +68,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG="${{ needs.build.outputs.release_tag }}"
-          if gh release view "$TAG" >/dev/null 2>&1; then
+          if gh release view "$TAG" --repo "${{ github.repository }}" >/dev/null 2>&1; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
             echo "Release ${TAG} already exists, skipping creation."
           else
@@ -95,10 +95,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -euo pipefail
+          REPO="${{ github.repository }}"
           CURRENT_TAG="${{ needs.build.outputs.release_tag }}"
-          gh release list --limit 100 --json tagName -q '.[].tagName' | while read -r tag; do
+          mapfile -t tags < <(gh release list --repo "$REPO" --limit 100 --json tagName -q '.[].tagName')
+          for tag in "${tags[@]}"; do
             if [[ "$tag" == CI.* && "$tag" != "$CURRENT_TAG" ]]; then
               echo "Deleting previous CI release: ${tag}"
-              gh release delete "$tag" --cleanup-tag --yes
+              gh release delete "$tag" --repo "$REPO" --cleanup-tag --yes
             fi
           done
