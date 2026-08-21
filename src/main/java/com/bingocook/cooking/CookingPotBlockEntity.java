@@ -17,7 +17,6 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -28,9 +27,9 @@ import net.minecraft.world.level.storage.ValueOutput;
  * and the cooking progress state machine.
  *
  * <p>Cooking rules (see the master plan): cooking only runs while all nine
- * ingredient slots are non-empty and a {@link CookingRecipe} matches; a lit
- * campfire directly below provides heat (no fuel slot, no water). Progress
- * advances once per tick when the recipe matches, heat is present and the
+ * ingredient slots are non-empty and a {@link CookingRecipe} matches; a configured
+ * heat source directly below provides heat (see {@link HeatSources}; no fuel slot,
+ * no water). Progress advances once per tick when the recipe matches, heat is
  * output slot can accept the result; it pauses with progress preserved when
  * heat is lost, and resets to zero when the input no longer matches or the
  * output slot is blocked (furnace-like). On completion each ingredient slot
@@ -214,7 +213,7 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
             blockEntity.cachedResult = prepareResult(blockEntity.currentRecipe.value(), blockEntity);
         }
 
-        if (!hasLitCampfireBelow(level, pos)) {
+        if (!HeatSources.isActiveBelow(level, pos)) {
             // No heat: pause, progress is preserved.
             updateLitState(level, pos, state, false);
             return;
@@ -301,15 +300,6 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
         }
         return null;
     }
-
-    /**
-     * @return true if the block directly below is a lit campfire.
-     */
-    private static boolean hasLitCampfireBelow(Level level, BlockPos pos) {
-        BlockState below = level.getBlockState(pos.below());
-        return below.getBlock() instanceof CampfireBlock && below.getValue(CampfireBlock.LIT);
-    }
-
     /**
      * @return true if the produced result can be merged into the current
      *         output slot (empty, or same item/components and still stackable).
