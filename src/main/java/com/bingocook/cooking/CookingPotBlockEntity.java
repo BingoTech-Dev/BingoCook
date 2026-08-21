@@ -30,7 +30,7 @@ import net.minecraft.world.level.storage.ValueOutput;
  * ingredient slots are non-empty and a {@link CookingRecipe} matches; a configured
  * heat source directly below provides heat (see {@link HeatSources}; no fuel slot,
  * no water). Progress advances once per tick when the recipe matches, heat is
- * output slot can accept the result; it resets to zero when heat is lost
+ * present, and the output slot can accept the result; it resets to zero when heat is lost
  * (heat source destroyed or extinguished), when the input no longer matches,
  * or when the output slot is blocked (furnace-like). On completion each ingredient slot
  * is decremented by one and one dish is produced, with the recipe's
