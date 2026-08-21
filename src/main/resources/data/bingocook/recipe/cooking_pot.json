@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "III",
+    "ISI",
+    "CCC"
+  ],
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "S": "minecraft:smoker",
+    "C": "minecraft:cobblestone"
+  },
+  "result": {
+    "id": "bingocook:cooking_pot",
+    "count": 1
+  }
+}
