@@ -106,7 +106,7 @@ kubejs/
 
 文件：`data/<命名空间>/bingocook/heat_sources.json`
 
-烹饪锅正下方一格必须为**有效热源**才会推进烹饪进度；热源丢失（被破坏或熄灭）时进度**立即重置为 0**；热源恢复后从 0 重新开始烹饪（配方缓存保留，不重新匹配）。
+烹饪锅正下方一格必须为**有效热源**才会推进烹饪进度；热源丢失（被破坏或熄灭）时进度立即重置。
 
 ### 4.1 添加热源
 
@@ -119,13 +119,13 @@ kubejs/
 
 - 条目为**方块 ID**（`minecraft:lava`）或**方块标签**（`#minecraft:campfires`）
 - 若方块状态含 `lit` 属性（篝火、熔炉等），则要求 `lit=true`；无 `lit` 属性的方块（岩浆等）放置即有效
-- 合并语义与 §3 元素类型相同：`replace: false` 追加，多命名空间合并，`replace: true` 清空后重建
+- 合并语义与 §3 元素类型相同
 
 模组默认热源：`minecraft:campfire`、`minecraft:soul_campfire`（需点燃）。
 
 ### 4.2 删除/重建热源
 
-与元素类型相同：用 `replace: true` 重建整个集合，或在自己的命名空间追加后通过覆盖模组默认文件移除默认条目。
+与 §3 相同
 
 ### 4.3 运行时命令（不写入数据包）
 
@@ -141,7 +141,9 @@ kubejs/
 
 ## 5. 物品元素值（Data Map）
 
-文件：`data/<命名空间>/data_maps/item/item_elements.json`（Data Map ID：`bingocook:item_elements`）。**注意目录是 `data_maps` 而非 `data_map`。**
+文件：`data/<命名空间>/data_maps/item/item_elements.json`（Data Map ID：`bingocook:item_elements`）。
+
+**注意目录是 `data_maps` 而非 `data_map`。**
 
 ### 5.1 为物品添加/修改元素值
 
@@ -155,9 +157,9 @@ kubejs/
 }
 ```
 
-- 值结构固定为 `{"elements": { <元素id>: <整数> }}`，`elements` 键不可省略
+- 值结构固定为 `{"elements": { <元素id>: <整数> }}`
 - 元素值为 0 等价于缺失
-- 同一物品 id 出现在多个文件中时，后加载者整条覆盖（同一物品不能部分合并）
+- 同一物品 id 出现在多个文件中时，后加载者整条覆盖
 
 ### 5.2 为整组物品赋值（tag）
 
@@ -182,9 +184,11 @@ kubejs/
 
 ## 6. 自定义配方
 
-文件：`data/<命名空间>/recipe/<配方名>.json`。**目录是单数 `recipe/`**——写成复数 `recipes/` 会被静默忽略且无任何报错。
+文件：`data/<命名空间>/recipe/<配方名>.json`。
 
-### 6.1 最简配方
+**目录是单数 `recipe/`**——写成复数 `recipes/` 会被忽略且不报错提示。
+
+### 6.1 示例
 
 ```json
 {
@@ -203,13 +207,13 @@ kubejs/
 
 | 字段 | 类型 | 说明 |
 |---|---|---|
-| `type` | string | 固定 `"bingocook:cooking"` |
-| `allowed` | string[] | **白名单**：允许出现的元素 id。省略 = 全部允许。不在白名单中的元素总量必须为 0。**强烈建议显式列出**——未来数据包新增的元素会自动被排除，无需改配方 |
+| `type` | string | `"bingocook:cooking"` |
+| `allowed` | string[] | **白名单**：允许出现的元素 id；省略 = 全部允许；不在白名单中的元素总量必须为 0。|
 | `requirements` | object | 各元素总量要求：`{ "min": n, "max": n }`，省略的项不限制（min 默认 0，max 默认无穷）。9 格元素值**求和**后判定 |
-| `cookingTime` | int | 烹饪所需 tick（20 tick = 1 秒），如 600 = 30 秒 |
+| `cookingTime` | int | 烹饪所需 tick（20 tick = 1 秒）|
 | `result` | object | 产出物品：`{ "id": "...", "count": n }`（count 默认 1） |
-| `seasonings` | object | 可选，调味品修正（见 §6.3） |
-| `enabled` | bool | 默认 true；false 时配方永不匹配（见 §7.2） |
+| `seasonings` | object | （可选）调味品修正 |
+| `enabled` | bool | 默认 true；false 时禁用该配方 |
 
 ### 6.3 调味品修正（seasonings）
 
@@ -240,11 +244,12 @@ kubejs/
 - 输入 9 格中**命中 seasonings 的物品按种类去重**，每种只生效一次（3 个糖只算 1 个糖的修正）
 - `nutrition`/`saturation`：对基础值做**原始加法**（可为负数，会直接加减营养/饱食度）
 - `effects`：附加食用效果（`effect` + `duration`（tick）+ `amplifier` + `probability`）。回血用 `minecraft:instant_health`（粒度为 4 点/级：amplifier 0 = 4 点，1 = 8 点）
-- `permanentAttributes`：**永久属性**——食用后经 `AttributeMap.addPermanentModifier` 永久生效，随玩家 NBT 持久化、重生保留，**每份食物生效一次**
-  - `operation`：`add_value`（加数值）/ `add_multiplied_base` / `add_multiplied_total`
+- `permanentAttributes`：**永久属性**——食用后经 `AttributeMap.addPermanentModifier` 永久生效，随玩家 NBT 持久化、重生保留
+  - `operation`：`add_value`（直接加数值）/ `add_multiplied_base`（按倍率线性加数值）/ `add_multiplied_total`（按倍率复利加数值）
+  - 可参考§9.1的例子进行理解
 - 调味品物品本身需要有 `seasoning` 元素值（或能通过配方 allowed）才能放入锅；**有元素值但未在配方 seasonings 中定义的物品只作占位，无任何修正**
 
-### 6.4 配方示例（自带配方参考）
+### 6.4 模组自带配方
 
 模组自带配方位于 `data/bingocook/recipe/`：
 
@@ -259,7 +264,7 @@ kubejs/
 
 | 要覆盖的内容 | 模组文件路径 | 你的数据包路径 |
 |---|---|---|
-| 元素集合 | `data/bingocook/bingocook/element_types.json` | 同路径（放进你的包） |
+| 元素集合 | `data/bingocook/bingocook/element_types.json` | 同路径 |
 | 热源 | `data/bingocook/bingocook/heat_sources.json` | 同路径 |
 | 物品元素值 | `data/bingocook/data_maps/item/item_elements.json` | 同路径 |
 | 配方 | `data/bingocook/recipe/<配方名>.json` | 同路径 |
@@ -280,7 +285,7 @@ kubejs/
 
 ### 7.2 禁用配方
 
-同路径覆盖为仅含 `enabled: false`（其余字段可保留原值）：配方加载后永不匹配，`/bingocook elements recipe` 会显示 `(disabled)`：
+同路径覆盖为仅含 `enabled: false`（其余字段可保留原值）：配方加载后禁用，`/bingocook elements recipe` 会显示 `(disabled)`：
 
 ```json
 {
@@ -313,8 +318,17 @@ kubejs/
 
 ---
 
-## 9. 常见陷阱
+## 9. 补充
 
+### 9.1 operation 例子
+
+- 假设某料理可以使max_health增加，且玩家的基础max_health为20
+
+- operation为add_value，amount为2，食用三次该料理后玩家的max_health为26（20 + 2 x 3）
+- operation为add_multiplied_base，amount为2，食用三次该料理后玩家的max_health为140（20 x（1 + 2 x 3））
+- operation为add_multiplied_total，amount为0.1，食用三次该料理后玩家的max_health为540（20 x (（1 + 2）^3 )）
+
+### 9.2 陷阱
 1. **目录单数**：配方必须用 `recipe/`，战利品表用 `loot_table/`。复数目录被**静默忽略、无任何报错**——写完配方后先 `elements recipe` 确认加载，或看启动日志的配方总数
 2. **`elements` 包装键**：Data Map 值必须是 `{"elements": {...}}`，不是直接的元素对象
 3. **allowed 白名单**：不写 `allowed` 意味着全部元素允许。想要"无其它元素"（如纯素炖），必须显式列出允许的元素
