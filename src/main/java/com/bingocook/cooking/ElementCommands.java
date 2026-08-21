@@ -51,7 +51,8 @@ public final class ElementCommands {
                                         .executes(ElementCommands::listItemElements)))
                         .then(Commands.literal("recipe")
                                 .then(Commands.argument("recipe", IdentifierArgument.id())
-                                        .executes(ElementCommands::listRecipe)))));
+                                        .executes(ElementCommands::listRecipe))))
+                .then(HeatSourceCommands.buildNode()));
     }
 
     private static int listElements(CommandContext<CommandSourceStack> context) {
