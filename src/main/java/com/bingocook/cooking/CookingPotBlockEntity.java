@@ -30,9 +30,9 @@ import net.minecraft.world.level.storage.ValueOutput;
  * ingredient slots are non-empty and a {@link CookingRecipe} matches; a configured
  * heat source directly below provides heat (see {@link HeatSources}; no fuel slot,
  * no water). Progress advances once per tick when the recipe matches, heat is
- * output slot can accept the result; it pauses with progress preserved when
- * heat is lost, and resets to zero when the input no longer matches or the
- * output slot is blocked (furnace-like). On completion each ingredient slot
+ * output slot can accept the result; it resets to zero when heat is lost
+ * (heat source destroyed or extinguished), when the input no longer matches,
+ * or when the output slot is blocked (furnace-like). On completion each ingredient slot
  * is decremented by one and one dish is produced, with the recipe's
  * seasonings applied to the produced stack.
  *
@@ -214,7 +214,13 @@ public class CookingPotBlockEntity extends BaseContainerBlockEntity implements C
         }
 
         if (!HeatSources.isActiveBelow(level, pos)) {
-            // No heat: pause, progress is preserved.
+            // No heat (destroyed or extinguished): reset progress, mirroring
+            // the output-blocked reset below. The recipe stays cached so a
+            // restored heat source resumes cooking from zero.
+            if (blockEntity.progress != 0) {
+                blockEntity.progress = 0;
+                blockEntity.setChanged();
+            }
             updateLitState(level, pos, state, false);
             return;
         }
