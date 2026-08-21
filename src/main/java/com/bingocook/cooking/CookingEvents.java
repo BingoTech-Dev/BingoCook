@@ -35,6 +35,7 @@ public final class CookingEvents {
     @SubscribeEvent
     public void onAddServerReloadListeners(AddServerReloadListenersEvent event) {
         event.addListener(ElementTypeLoader.LISTENER_ID, ElementTypeLoader.INSTANCE);
+        event.addListener(HeatSourceLoader.LISTENER_ID, HeatSourceLoader.INSTANCE);
     }
 
     @SubscribeEvent

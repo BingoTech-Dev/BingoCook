@@ -48,4 +48,12 @@ public final class CookingData {
         ElementValues values = holder.getData(DataMaps.ITEM_ELEMENTS);
         return values == null ? Map.of() : values.elements();
     }
+
+    /**
+     * @return the currently effective heat source entries; empty before the first
+     *         server reload or when data packs removed all heat sources.
+     */
+    public static Set<HeatSourceEntry> heatSources() {
+        return HeatSourceManager.INSTANCE.effective();
+    }
 }

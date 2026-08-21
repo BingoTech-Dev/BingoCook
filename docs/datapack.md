@@ -13,6 +13,7 @@
 - 每件食材带有**元素值**（如 `bingocook:fruit: 2`），由数据包定义
 - **配方**规定元素总量要求（min/max、allowed 白名单），9 格全满且满足要求时开始烹饪
 - 配方可定义**调味品**（seasonings）：输入中的调味品会修正产出菜肴的属性
+- **热源**：烹饪锅正下方需为配置的有效热源（默认点燃的篝火/灵魂篝火），见 §4
 - 8 种默认元素：`bingocook:fruit`（水果）、`vegetable`（青菜）、`meat`（肉）、`egg`（蛋）、`milk`（奶）、`honey`（蜂蜜）、`chaos`（混沌）、`seasoning`（调味）
 
 ---
@@ -27,7 +28,8 @@ mycook/
 └── data/
     ├── mymod/           # 你的命名空间
     │   └── bingocook/
-    │       └── element_types.json      # 元素类型
+    │       ├── element_types.json      # 元素类型
+    │       └── heat_sources.json       # 烹饪热源
     └── bingocook/       # 覆盖模组自带数据时使用（见 §6）
         ├── data_maps/item/item_elements.json
         └── recipe/xxx.json
@@ -75,15 +77,52 @@ mycook/
 
 ### 3.3 删除元素
 
-把模组自带文件以**同路径**放进数据包并 `replace: true` 重建（无法单独删除一个元素，只能重建集合）。删除某元素后，引用它的物品元素值成为"未知元素"。**注意：携带白名单外元素（含"未知元素"）的物品不会"被忽略"，而是会使所有声明了 `allowed` 白名单的配方不匹配**——`allowed` 机制要求白名单外的元素总量必须为 0（见 §5.2）。因此删除元素后，残留其值的物品将无法参与任何带白名单的配方，直到你清理对应物品的元素值（见 §4.3）。
+把模组自带文件以**同路径**放进数据包并 `replace: true` 重建（无法单独删除一个元素，只能重建集合）。删除某元素后，引用它的物品元素值成为"未知元素"。**注意：携带白名单外元素（含"未知元素"）的物品不会"被忽略"，而是会使所有声明了 `allowed` 白名单的配方不匹配**——`allowed` 机制要求白名单外的元素总量必须为 0（见 §6.2）。因此删除元素后，残留其值的物品将无法参与任何带白名单的配方，直到你清理对应物品的元素值（见 §5.3）。
 
 ---
 
-## 4. 物品元素值（Data Map）
+## 4. 热源配置
+
+文件：`data/<命名空间>/bingocook/heat_sources.json`（模组默认：`data/bingocook/bingocook/heat_sources.json`）。
+
+烹饪锅正下方一格必须为**有效热源**才会推进烹饪进度；热源丢失时进度暂停（不重置），重新满足条件后继续。
+
+### 4.1 添加热源
+
+```json
+{
+  "replace": false,
+  "values": ["minecraft:lava", "minecraft:magma_block"]
+}
+```
+
+- 条目为**方块 ID**（`minecraft:lava`）或**方块标签**（`#minecraft:campfires`）
+- 若方块状态含 `lit` 属性（篝火、熔炉等），则要求 `lit=true`；无 `lit` 属性的方块（岩浆等）放置即有效
+- 合并语义与 §3 元素类型相同：`replace: false` 追加，多命名空间合并，`replace: true` 清空后重建
+
+模组默认热源：`minecraft:campfire`、`minecraft:soul_campfire`（需点燃）。
+
+### 4.2 删除/重建热源
+
+与元素类型相同：用 `replace: true` 重建整个集合，或在自己的命名空间追加后通过覆盖模组默认文件移除默认条目。
+
+### 4.3 运行时命令（不写入数据包）
+
+管理员可用命令临时增删热源，**`/reload` 后恢复为数据包默认值**：
+
+```
+/bingocook heat_sources list
+/bingocook heat_sources add minecraft:lava
+/bingocook heat_sources remove minecraft:campfire
+```
+
+---
+
+## 5. 物品元素值（Data Map）
 
 文件：`data/<命名空间>/data_maps/item/item_elements.json`（Data Map ID：`bingocook:item_elements`）。**注意目录是 `data_maps` 而非 `data_map`。**
 
-### 4.1 为物品添加/修改元素值
+### 5.1 为物品添加/修改元素值
 
 ```json
 {
@@ -99,7 +138,7 @@ mycook/
 - 元素值为 0 等价于缺失
 - 同一物品 id 出现在多个文件中时，后加载者整条覆盖（同一物品不能部分合并）
 
-### 4.2 为整组物品赋值（tag）
+### 5.2 为整组物品赋值（tag）
 
 ```json
 {
@@ -109,7 +148,7 @@ mycook/
 }
 ```
 
-### 4.3 删除物品的元素值
+### 5.3 删除物品的元素值
 
 ```json
 {
@@ -120,11 +159,11 @@ mycook/
 
 ---
 
-## 5. 自定义配方
+## 6. 自定义配方
 
 文件：`data/<命名空间>/recipe/<配方名>.json`。**目录是单数 `recipe/`**——写成复数 `recipes/` 会被静默忽略且无任何报错。
 
-### 5.1 最简配方
+### 6.1 最简配方
 
 ```json
 {
@@ -139,7 +178,7 @@ mycook/
 }
 ```
 
-### 5.2 字段说明
+### 6.2 字段说明
 
 | 字段 | 类型 | 说明 |
 |---|---|---|
@@ -148,10 +187,10 @@ mycook/
 | `requirements` | object | 各元素总量要求：`{ "min": n, "max": n }`，省略的项不限制（min 默认 0，max 默认无穷）。9 格元素值**求和**后判定 |
 | `cookingTime` | int | 烹饪所需 tick（20 tick = 1 秒），如 600 = 30 秒 |
 | `result` | object | 产出物品：`{ "id": "...", "count": n }`（count 默认 1） |
-| `seasonings` | object | 可选，调味品修正（见 §5.3） |
-| `enabled` | bool | 默认 true；false 时配方永不匹配（见 §6.2） |
+| `seasonings` | object | 可选，调味品修正（见 §6.3） |
+| `enabled` | bool | 默认 true；false 时配方永不匹配（见 §7.2） |
 
-### 5.3 调味品修正（seasonings）
+### 6.3 调味品修正（seasonings）
 
 ```json
 {
@@ -184,7 +223,7 @@ mycook/
   - `operation`：`add_value`（加数值）/ `add_multiplied_base` / `add_multiplied_total`
 - 调味品物品本身需要有 `seasoning` 元素值（或能通过配方 allowed）才能放入锅；**有元素值但未在配方 seasonings 中定义的物品只作占位，无任何修正**
 
-### 5.4 配方示例（自带配方参考）
+### 6.4 配方示例（自带配方参考）
 
 模组自带配方位于 `data/bingocook/recipe/`：
 
@@ -193,17 +232,18 @@ mycook/
 
 ---
 
-## 6. 覆盖模组自带数据
+## 7. 覆盖模组自带数据
 
 数据包优先级：后加载的包覆盖先加载的包（同一数据包内后写的文件覆盖先写的）。覆盖模组内容时，把文件放到**与模组相同的路径**：
 
 | 要覆盖的内容 | 模组文件路径 | 你的数据包路径 |
 |---|---|---|
 | 元素集合 | `data/bingocook/bingocook/element_types.json` | 同路径（放进你的包） |
+| 热源 | `data/bingocook/bingocook/heat_sources.json` | 同路径 |
 | 物品元素值 | `data/bingocook/data_maps/item/item_elements.json` | 同路径 |
 | 配方 | `data/bingocook/recipe/<配方名>.json` | 同路径 |
 
-### 6.1 修改配方
+### 7.1 修改配方
 
 同路径覆盖整个文件（`allowed`/`requirements`/`cookingTime`/`result` 等全部重写）：
 
@@ -217,7 +257,7 @@ mycook/
 }
 ```
 
-### 6.2 禁用配方
+### 7.2 禁用配方
 
 同路径覆盖为仅含 `enabled: false`（其余字段可保留原值）：配方加载后永不匹配，`/bingocook elements recipe` 会显示 `(disabled)`：
 
@@ -230,7 +270,7 @@ mycook/
 
 ---
 
-## 7. 查询与调试
+## 8. 查询与调试
 
 权限要求：`LEVEL_GAMEMASTERS`（管理员）。
 
@@ -243,13 +283,16 @@ mycook/
 
 # 查询配方要求（allowed / 各元素 min-max / 时长 / 调味品 / disabled 状态）
 /bingocook elements recipe bingocook:vegetable_fruit_stew
+
+# 列出当前有效热源（标注 datapack / runtime 来源）
+/bingocook heat_sources list
 ```
 
-修改数据后执行 `/reload`（对元素类型、Data Map、配方三类数据全部生效）。
+修改数据后执行 `/reload`（对元素类型、热源、Data Map、配方四类数据全部生效；命令临时增删的热源也会在此刻恢复为数据包默认值）。
 
 ---
 
-## 8. 常见陷阱
+## 9. 常见陷阱
 
 1. **目录单数**：配方必须用 `recipe/`，战利品表用 `loot_table/`。复数目录被**静默忽略、无任何报错**——写完配方后先 `elements recipe` 确认加载，或看启动日志的配方总数
 2. **`elements` 包装键**：Data Map 值必须是 `{"elements": {...}}`，不是直接的元素对象
