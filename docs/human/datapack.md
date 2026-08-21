@@ -1,26 +1,25 @@
-# BingoCook 数据包自定义内容教程
+# BingoCook 数据包自定义内容
 
-本文面向数据包作者：如何为 BingoCook 添加自定义**元素**、给**物品分配元素值**、编写**烹饪配方**与**调味品修正**。
+为 BingoCook 添加自定义**元素**/**物品分配元素值**/**烹饪配方**/**调味品修正**/**热源方块**。
 
-环境要求：Minecraft 26.2+（NeoForge），BingoCook 模组已安装。所有数据修改通过 `/reload` 即时生效，无需重启。
+环境要求：安装了 BingoCook 模组的最新版本
 
 ---
 
-## 1. 机制速览
+## 1. 机制
 
-烹饪锅以 3x3（9 格）食材 + 1 格输出进行烹饪：
+烹饪锅以 3x3（9 格）输入 + 1 格输出进行烹饪：
 
-- 每件食材带有**元素值**（如 `bingocook:fruit: 2`），由数据包定义
+- 每件食材带有**元素值**（如 `bingocook:fruit: 2`）
 - **配方**规定元素总量要求（min/max、allowed 白名单），9 格全满且满足要求时开始烹饪
 - 配方可定义**调味品**（seasonings）：输入中的调味品会修正产出菜肴的属性
-- **热源**：烹饪锅正下方需为配置的有效热源（默认点燃的篝火/灵魂篝火），见 §4
-- 8 种默认元素：`bingocook:fruit`（水果）、`vegetable`（青菜）、`meat`（肉）、`egg`（蛋）、`milk`（奶）、`honey`（蜂蜜）、`chaos`（混沌）、`seasoning`（调味）
+- 烹饪锅正下方需为配置的**有效热源**（如点燃的营火）
 
 ---
 
 ## 2. 数据包结构
 
-在 `saves/<世界>/datapacks/` 下建立数据包（也可用 `run/world/datapacks/`）：
+### 2.1 在 `saves/<世界>/datapacks/` 下建立数据包
 
 ```
 mycook/
@@ -35,7 +34,7 @@ mycook/
         └── recipe/xxx.json
 ```
 
-`pack.mcmeta`：
+### 2.2 `pack.mcmeta`格式
 
 ```json
 {
@@ -46,13 +45,32 @@ mycook/
 }
 ```
 
+### 使用KubeJS建立数据包
+
+如果KubeJS模组已经移植到了本模组支持的Minecraft版本，用它加载数据包会更好。
+
+```
+kubejs/
+└── startup_scripts
+└── server_scripts
+└── client_scripts
+└── data/
+    ├── mymod/           # 你的命名空间
+    │   └── bingocook/
+    │       ├── element_types.json      # 元素类型
+    │       └── heat_sources.json       # 烹饪热源
+    └── bingocook/       # 覆盖模组自带数据时使用（见 §6）
+        ├── data_maps/item/item_elements.json
+        └── recipe/xxx.json
+```
+
 ---
 
 ## 3. 元素类型
 
 ### 3.1 添加新元素
 
-新文件 `data/<你的命名空间>/bingocook/element_types.json`（模组默认文件在同路径 `bingocook/bingocook/element_types.json`）：
+`data/<你的命名空间>/bingocook/element_types.json`：
 
 ```json
 {
@@ -61,8 +79,7 @@ mycook/
 }
 ```
 
-- `replace: false`（默认）：向现有集合**追加**
-- 不同命名空间各自追加，互不覆盖
+- `replace: false`（默认）：向现有集合**追加**新元素，而不是删除模组原有的元素后再新建列表中的元素。
 
 ### 3.2 清空并重建元素集合
 
@@ -73,17 +90,21 @@ mycook/
 }
 ```
 
-清空全部元素后仅保留列表中的元素。**注意**：元素集合与物品元素值相互独立——清空元素不会删除物品上的元素值数据，只是配方无法再引用被移除的元素。
+删除模组原有的元素后再新建列表中的元素。
+
+**注意**：元素集合与物品元素值相互独立——清空元素不会删除物品上的元素值数据，只是配方无法再引用被移除的元素。
 
 ### 3.3 删除元素
 
-把模组自带文件以**同路径**放进数据包并 `replace: true` 重建（无法单独删除一个元素，只能重建集合）。删除某元素后，引用它的物品元素值成为"未知元素"。**注意：携带白名单外元素（含"未知元素"）的物品不会"被忽略"，而是会使所有声明了 `allowed` 白名单的配方不匹配**——`allowed` 机制要求白名单外的元素总量必须为 0（见 §6.2）。因此删除元素后，残留其值的物品将无法参与任何带白名单的配方，直到你清理对应物品的元素值（见 §5.3）。
+把模组自带文件以**同路径**放进数据包并 `replace: true` 重建（无法单独删除一个元素，只能重建集合）。
+删除某元素后，引用它的物品元素值成为"未知元素"。
+删除元素后，残留其值的物品将无法参与任何带白名单的配方，直到你清理对应物品的元素值。
 
 ---
 
 ## 4. 热源配置
 
-文件：`data/<命名空间>/bingocook/heat_sources.json`（模组默认：`data/bingocook/bingocook/heat_sources.json`）。
+文件：`data/<命名空间>/bingocook/heat_sources.json`
 
 烹饪锅正下方一格必须为**有效热源**才会推进烹饪进度；热源丢失时进度暂停（不重置），重新满足条件后继续。
 

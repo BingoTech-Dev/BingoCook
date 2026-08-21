@@ -1,7 +1,8 @@
-
 # BingoCook
 
 A Minecraft mod built with NeoForge for Minecraft 26.2.
+
+NOTICE : The release version is **unstable**,please wait for update.
 
 ## Requirements
 
