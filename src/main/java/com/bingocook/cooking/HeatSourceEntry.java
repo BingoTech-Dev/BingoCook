@@ -29,13 +29,12 @@ public record HeatSourceEntry(String raw, boolean tag, Identifier id) {
      * @return true if the given block state matches this entry (block ID or tag membership).
      */
     public boolean matches(BlockState state) {
-        Block block = state.getBlock();
         if (this.tag) {
             TagKey<Block> tagKey = TagKey.create(Registries.BLOCK, this.id);
-            return block.builtInRegistryHolder().is(tagKey);
+            return state.is(tagKey);
         }
         ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, this.id);
-        return block.builtInRegistryHolder().is(blockKey);
+        return state.is(blockKey);
     }
 
     @Override
