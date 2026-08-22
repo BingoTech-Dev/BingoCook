@@ -22,9 +22,11 @@ jobs:
           MOD_VERSION=$(grep '^mod_version=' gradle.properties | cut -d= -f2)
           SHORT_SHA="${GITHUB_SHA:0:7}"
           if [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == "refs/heads/main" ]]; then
-            FULL_VERSION="CI.${GITHUB_RUN_NUMBER}.${SHORT_SHA}"
+            # NeoForge requires mod versions to start with a digit (^\d+.*); keep CI.* for release tags only.
+            RELEASE_TAG="CI.${GITHUB_RUN_NUMBER}.${SHORT_SHA}"
+            FULL_VERSION="${MOD_VERSION}+ci.${GITHUB_RUN_NUMBER}.${SHORT_SHA}"
             echo "full_version=${FULL_VERSION}" >> "$GITHUB_OUTPUT"
-            echo "release_tag=${FULL_VERSION}" >> "$GITHUB_OUTPUT"
+            echo "release_tag=${RELEASE_TAG}" >> "$GITHUB_OUTPUT"
           else
             echo "full_version=${MOD_VERSION}" >> "$GITHUB_OUTPUT"
             echo "release_tag=" >> "$GITHUB_OUTPUT"
